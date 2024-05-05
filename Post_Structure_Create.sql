@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS Training_programs (
     ID_Training_programs SERIAL NOT NULL PRIMARY KEY,
     Name_Training_programs VARCHAR(100) NOT NULL,
     Prefix_Training_programs VARCHAR(5) NOT NULL,
-    Direction_Training_programs INT NOT NULL, -- INT вместо Serial
     Time_training_Training_programs INT NOT NULL, -- INT вместо Serial
     Cost_study_Training_programs DECIMAL(10,2) NOT NULL,
     Name_qualification_Training_programs VARCHAR(50) NOT NULL,
@@ -15,7 +14,6 @@ CREATE TABLE IF NOT EXISTS Training_programs (
 CREATE OR REPLACE PROCEDURE Training_programs_Insert (
     p_Name_Training_programs VARCHAR(100),
     p_Prefix_Training_programs VARCHAR(5),
-    p_Direction_Training_programs INT,
     p_Time_training_Training_programs INT,
     p_Cost_study_Training_programs DECIMAL(10,2),
     p_Name_qualification_Training_programs VARCHAR(50),
@@ -27,7 +25,6 @@ BEGIN
     INSERT INTO Training_programs (
         Name_Training_programs,
         Prefix_Training_programs,
-        Direction_Training_programs,
         Time_training_Training_programs,
         Cost_study_Training_programs,
         Name_qualification_Training_programs,
@@ -35,7 +32,6 @@ BEGIN
     ) VALUES (
         p_Name_Training_programs,
         p_Prefix_Training_programs,
-        p_Direction_Training_programs,
         p_Time_training_Training_programs,
         p_Cost_study_Training_programs,
         p_Name_qualification_Training_programs,
@@ -48,7 +44,6 @@ create or replace procedure Training_programs_Update (
 p_ID_Training_programs int,
 p_Name_Training_programs VARCHAR(100),
 p_Prefix_Training_programs VARCHAR(5),
-p_Direction_Training_programs INT,
 p_Time_training_Training_programs INT,
 p_Cost_study_Training_programs DECIMAL(10,2),
 p_Name_qualification_Training_programs VARCHAR(50),
@@ -60,7 +55,6 @@ as $$
         update Training_programs set
             Name_Training_programs = p_Name_Training_programs,
             Prefix_Training_programs = p_Prefix_Training_programs,
-            Direction_Training_programs = p_Direction_Training_programs,
             Time_training_Training_programs = p_Time_training_Training_programs,
             Cost_study_Training_programs = p_Cost_study_Training_programs,
             Name_qualification_Training_programs = p_Name_qualification_Training_programs,
@@ -85,43 +79,39 @@ $$;
 create index if not exists index_ID_Training_programs on Training_programs (ID_Training_programs);
 create index if not exists index_Name_Training_programs on Training_programs (ID_Training_programs);
 create index if not exists index_Prefix_Training_programs on Training_programs (ID_Training_programs);
-create index if not exists index_Direction_Training_programs on Training_programs (ID_Training_programs);
 create index if not exists index_Name_qualification_Training_programs on Training_programs (ID_Training_programs);
 
--- Создание таблицы modules
-CREATE TABLE IF NOT EXISTS modules (
+-- Создание таблицы Modules
+CREATE TABLE IF NOT EXISTS Modules (
     ID_modules SERIAL NOT NULL PRIMARY KEY,
     Name_modules VARCHAR(50) NOT NULL,
-    Prefix_modules VARCHAR(5) NOT NULL,
+    Prefix_modules VARCHAR(8) NOT NULL,
     Num_study_h_modules INT NOT NULL,
     Theoretical_h_modules INT NOT NULL,
     Practical_h_modules INT NOT NULL,
-    alone_h_modules INT NOT NULL,
-    Topic_h_modules INT NOT NULL
+    Alone_h_modules INT NOT NULL
 );
 
 -- Реализация хранимых процедур
 -- Добавление
-CREATE OR REPLACE PROCEDURE modules_Insert (
+CREATE OR REPLACE PROCEDURE Modules_Insert (
     p_Name_modules VARCHAR(50),
-    p_Prefix_modules VARCHAR(5),
+    p_Prefix_modules VARCHAR(8),
     p_Num_study_h_modules INT,
     p_Theoretical_h_modules INT,
     p_Practical_h_modules INT,
-    p_alone_h_modules INT,
-    p_Topic_h_modules INT
+    p_Alone_h_modules INT
 )
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO modules (
+    INSERT INTO Modules (
     Name_modules,
     Prefix_modules,
     Num_study_h_modules,
     Theoretical_h_modules,
     Practical_h_modules,
-    alone_h_modules,
-    Topic_h_modules
+    Alone_h_modules
     )
     VALUES (
     p_Name_modules,
@@ -129,59 +119,56 @@ BEGIN
     p_Num_study_h_modules,
     p_Theoretical_h_modules,
     p_Practical_h_modules,
-    p_alone_h_modules,
-    p_Topic_h_modules
+    p_Alone_h_modules
     );
 END;
 $$;
 
 -- Изменение
-CREATE OR REPLACE PROCEDURE modules_Update (
-    p_ID_modules INT,
+CREATE OR REPLACE PROCEDURE Modules_Update (
+    p_ID_Modules INT,
     p_Name_modules VARCHAR(50),
-    p_Prefix_modules VARCHAR(5),
+    p_Prefix_modules VARCHAR(8),
     p_Num_study_h_modules INT,
     p_Theoretical_h_modules INT,
     p_Practical_h_modules INT,
-    p_alone_h_modules INT,
-    p_Topic_h_modules INT
+    p_Alone_h_modules INT
 )
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    UPDATE modules SET
+    UPDATE Modules SET
         Name_modules = p_Name_modules,
         Prefix_modules = p_Prefix_modules,
         Num_study_h_modules = p_Num_study_h_modules,
         Theoretical_h_modules = p_Theoretical_h_modules,
         Practical_h_modules = p_Practical_h_modules,
-        alone_h_modules = p_alone_h_modules,
-        Topic_h_modules = p_Topic_h_modules
+        Alone_h_modules = p_Alone_h_modules
     WHERE
-        id_modules = p_id_modules;
+        id_Modules = p_id_Modules;
 END;
 $$;
 
 -- Удаление
-CREATE OR REPLACE PROCEDURE modules_Delete (p_id_modules int)
+CREATE OR REPLACE PROCEDURE Modules_Delete (p_id_Modules int)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    DELETE FROM modules
+    DELETE FROM Modules
         WHERE
-            id_modules = p_id_modules;
+            id_Modules = p_id_Modules;
 END;
 $$;
 
 -- Создание индексов
-CREATE INDEX IF NOT EXISTS index_ID_modules ON modules (ID_modules);
-CREATE INDEX IF NOT EXISTS index_Prefix_modules ON modules (ID_modules);
+CREATE INDEX IF NOT EXISTS index_ID_Modules ON Modules (ID_Modules);
+CREATE INDEX IF NOT EXISTS index_Prefix_Modules ON Modules (ID_Modules);
 
 -- Создание таблицы Program_modules
 CREATE TABLE IF NOT EXISTS Program_modules (
     ID_Program_modules SERIAL NOT NULL PRIMARY KEY,
     Training_programs_ID int NOT NULL REFERENCES Training_programs(ID_Training_programs),
-    Modules_ID int NOT NULL REFERENCES modules(ID_modules)
+    Modules_ID int NOT NULL REFERENCES Modules(ID_modules)
 );
 
 -- Добавление
@@ -189,7 +176,7 @@ CREATE OR REPLACE PROCEDURE Program_Modules_Insert (p_training_programs_id INT, 
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO Program_Modules (training_programs_id, moduless_id)
+    INSERT INTO Program_Modules (training_programs_id, modules_id)
     VALUES (p_training_programs_id, p_modules_id);
 END;
 $$;
@@ -250,7 +237,7 @@ BEGIN
     Surname_Employees,
     Name_Employees,
     Middle_name_Employees,
-    Name_post_Employeess,
+    Name_post_Employees,
     Login_Employees,
     Password_Employees
     )
@@ -282,7 +269,7 @@ BEGIN
         Surname_Employees = p_Surname_Employees,
         Name_Employees = p_Name_Employees,
         Middle_name_Employees = p_Middle_name_Employees,
-        Name_post_Employeess = p_Name_post_Employees,
+        Name_post_Employees = p_Name_post_Employees,
         Login_Employees = p_Login_Employees,
         Password_Employees = p_Password_Employees
     WHERE
@@ -356,11 +343,11 @@ CREATE INDEX IF NOT EXISTS index_ID_Distrib ON Distrib (ID_Distrib);
 -- Создание таблицы Skills
 CREATE TABLE IF NOT EXISTS Skills (
     ID_Skills SERIAL NOT NULL PRIMARY KEY,
-    Name_Skills VARCHAR(50) NOT NULL
+    Name_Skills VARCHAR(70) NOT NULL
 );
 
 --Добавление
-CREATE OR REPLACE PROCEDURE Skills_Insert (p_name_Skills Varchar(100))
+CREATE OR REPLACE PROCEDURE Skills_Insert (p_name_Skills Varchar(70))
 LANGUAGE plpgsql
 AS $$
 BEGIN
@@ -370,7 +357,7 @@ END;
 $$;
 
 --Изменение
-CREATE OR REPLACE PROCEDURE Skills_Update (p_id_Skills int, p_name_Skills Varchar(100))
+CREATE OR REPLACE PROCEDURE Skills_Update (p_id_Skills int, p_name_Skills Varchar(70))
 LANGUAGE plpgsql
 AS $$
 BEGIN
@@ -493,7 +480,7 @@ CREATE TABLE IF NOT EXISTS Module_technologies (
 
 -- Реализация хранимых процедур
 -- Добавление
-CREATE OR REPLACE PROCEDURE Module_technologies_Insert (Program_modules_ID INT, Technologies_ID INT)
+CREATE OR REPLACE PROCEDURE Module_technologies_Insert (p_Program_modules_ID INT, p_Technologies_ID INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
@@ -533,22 +520,22 @@ CREATE INDEX IF NOT EXISTS index_ID_Module_technologies ON Module_technologies (
 -- Создание таблицы Topics
 CREATE TABLE IF NOT EXISTS Topics (
     ID_Topics SERIAL NOT NULL PRIMARY KEY,
-    Name_Topics VARCHAR(50) NOT NULL
+    Name_Topics VARCHAR(60) NOT NULL
 );
 
 -- Реализация хранимых процедур
 -- Добавление
-CREATE OR REPLACE PROCEDURE Topics_Insert (p_Name_Topics VARCHAR(50))
+CREATE OR REPLACE PROCEDURE Topics_Insert (p_Name_Topics VARCHAR(60))
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO Topics (Name_Topics)
-    VALUES (p_Type_Format_Topics);
+    VALUES (p_Name_Topics);
 END;
 $$;
 
 -- Изменение
-CREATE OR REPLACE PROCEDURE Topics_Update (p_ID_Format_Topics INT, p_Type_Format_Topics VARCHAR(22))
+CREATE OR REPLACE PROCEDURE Topics_Update (p_Name_Topics VARCHAR(60))
 LANGUAGE plpgsql
 AS $$
 BEGIN
@@ -668,28 +655,28 @@ CREATE INDEX IF NOT EXISTS index_Type_Format_Topics ON Format_Topics (ID_Format_
 -- Создание таблицы Training_status
 CREATE TABLE IF NOT EXISTS Training_status (
     ID_Training_Status SERIAL PRIMARY KEY,
-    Type_Status VARCHAR(17) NOT NULL
+    Type_Training_Status VARCHAR(18) NOT NULL
 );
 
 -- Реализация хранимых процедур
 -- Добавление
-CREATE OR REPLACE PROCEDURE Training_status_Insert (p_Type_Status VARCHAR(17))
+CREATE OR REPLACE PROCEDURE Training_status_Insert (p_Type_Training_Status VARCHAR(18))
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO Training_status (Type_Status)
-    VALUES (p_Type_Status);
+    INSERT INTO Training_status (Type_Training_Status)
+    VALUES (p_Type_Training_Status);
 END;
 $$;
 
 -- Изменение
-CREATE OR REPLACE PROCEDURE Training_status_Update (p_ID_Training_status INT, p_Type_Status VARCHAR(17))
+CREATE OR REPLACE PROCEDURE Training_status_Update (p_ID_Training_status INT, p_Type_Training_Status VARCHAR(18))
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE Training_status
     SET
-        Type_Status = p_Type_Status
+        Type_Training_Status = p_Type_Training_Status
     WHERE
         ID_Training_Status = p_ID_Training_status;
 END;
@@ -708,37 +695,46 @@ $$;
 
 -- Создание индексов
 CREATE INDEX IF NOT EXISTS index_ID_Training_status ON Training_status (ID_Training_Status);
-CREATE INDEX IF NOT EXISTS index_Type_Status ON Training_status (Type_Status);
+CREATE INDEX IF NOT EXISTS index_Type_Training_Status ON Training_status (Type_Training_Status);
 
 -- Создание таблицы Study_Group
 CREATE TABLE IF NOT EXISTS Study_Group (
     ID_Study_Group SERIAL NOT NULL PRIMARY KEY,
-    Num_St_Group VARCHAR(7) NOT NULL,
-    Status_St_Group INT NOT NULL REFERENCES Training_status(ID_Training_status),
-    Program_St_Group INT NOT NULL REFERENCES Program_modules(ID_Program_modules)
+    Num_Study_Group VARCHAR(7) NOT NULL,
+    Training_status_ID INT NOT NULL REFERENCES Training_status (ID_Training_status),
+    Training_programs_ID INT NOT NULL REFERENCES Program_modules (ID_Program_modules)
 );
 
 -- Реализация хранимых процедур
 -- Добавление
-CREATE OR REPLACE PROCEDURE Study_Group_Insert (p_Num_St_Group VARCHAR(7), p_Status_St_Group INT, p_Program_St_Group INT)
+CREATE OR REPLACE PROCEDURE Study_Group_Insert (
+    p_Num_Study_Group VARCHAR(7),
+    p_Training_status_ID INT,
+    p_Training_programs_ID INT
+)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO Study_Group (Type_Status)
-    VALUES (p_Type_Status);
+    INSERT INTO Study_Group (Num_Study_Group, Training_status_ID, Training_programs_ID)
+    VALUES (p_Num_Study_Group, p_Training_status_ID, p_Training_programs_ID);
 END;
 $$;
 
 -- Изменение
-CREATE OR REPLACE PROCEDURE Study_Group_Update (p_ID_Study_Group int, Num_St_Group VARCHAR(7), Status_St_Group INT, Program_St_Group INT)
+CREATE OR REPLACE PROCEDURE Study_Group_Update (
+    p_ID_Study_Group INT,
+    p_Num_Study_Group VARCHAR(7),
+    p_Training_status_ID INT,
+    p_Training_programs_ID INT
+)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE Study_Group
     SET
-        Num_St_Group = p_Num_St_Group,
-        Status_St_Group = p_Status_St_Group,
-        Program_St_Group = p_Program_St_Group
+        Num_Study_Group = p_Num_Study_Group,
+        Training_status_ID = p_Training_status_ID,
+        Training_programs_ID = p_Training_programs_ID
     WHERE
         id_Study_Group = p_id_Study_Group;
 END;
@@ -757,7 +753,7 @@ $$;
 
 -- Создание индексов
 CREATE INDEX IF NOT EXISTS index_ID_Study_Group ON Study_Group (ID_Study_Group);
-CREATE INDEX IF NOT EXISTS index_Num_St_Grp ON Study_Group (ID_Study_Group);
+CREATE INDEX IF NOT EXISTS index_Num_Study_Group ON Study_Group (ID_Study_Group);
 
 -- Создание таблицы Listeners
 CREATE TABLE IF NOT EXISTS Listeners (
@@ -773,7 +769,7 @@ CREATE TABLE IF NOT EXISTS Listeners (
     Address_Listeners VARCHAR(50) NOT NULL,
     Phone_Listeners VARCHAR(16) NOT NULL,
     Email_Listeners VARCHAR(255) NOT NULL,
-    SNILS_Listeners VARCHAR(13) NOT NULL,
+    SNILS_Listeners VARCHAR(14) NOT NULL,
     Login_Listeners VARCHAR(36) NOT NULL,
     Password_Listeners VARCHAR(36) NOT NULL
 );
@@ -781,20 +777,20 @@ CREATE TABLE IF NOT EXISTS Listeners (
 -- Реализация хранимых процедур
 -- Добавление
 CREATE OR REPLACE PROCEDURE Listeners_Insert (
-    Surname_Listeners VARCHAR(50),
-    Name_Listeners VARCHAR(50),
-    Patronymic_Listeners VARCHAR(50),
-    Passport_series_Listeners VARCHAR(5),
-    Passport_num_Listeners INT,
-    Birthday_Listeners DATE,
-    Issued_whom_when_Listeners VARCHAR(70),
-    Unit_code_Listeners VARCHAR(7),
-    Address_Listeners VARCHAR(50),
-    Phone_Listeners VARCHAR(16),
-    Email_Listeners VARCHAR(255),
-    SNILS_Listeners VARCHAR(13),
-    Login_Listeners VARCHAR(36),
-    Password_Listeners VARCHAR(36)
+    p_Surname_Listeners VARCHAR(50),
+    p_Name_Listeners VARCHAR(50),
+    p_Patronymic_Listeners VARCHAR(50),
+    p_Passport_series_Listeners VARCHAR(5),
+    p_Passport_num_Listeners INT,
+    p_Birthday_Listeners DATE,
+    p_Issued_whom_when_Listeners VARCHAR(70),
+    p_Unit_code_Listeners VARCHAR(7),
+    p_Address_Listeners VARCHAR(50),
+    p_Phone_Listeners VARCHAR(16),
+    p_Email_Listeners VARCHAR(255),
+    p_SNILS_Listeners VARCHAR(14),
+    p_Login_Listeners VARCHAR(36),
+    p_Password_Listeners VARCHAR(36)
 )
 LANGUAGE plpgsql
 AS $$
@@ -848,7 +844,7 @@ CREATE OR REPLACE PROCEDURE Listeners_Update (
     p_Address_Listeners VARCHAR(50),
     p_Phone_Listeners VARCHAR(16),
     p_Email_Listeners VARCHAR,
-    p_SNILS_Listeners VARCHAR(13),
+    p_SNILS_Listeners VARCHAR(14),
     p_Login_Listeners VARCHAR(36),
     p_Password_Listeners VARCHAR(36)
     )
@@ -901,7 +897,7 @@ CREATE INDEX IF NOT EXISTS index_Login_Listeners ON Listeners (ID_Listeners);
 -- Создание таблицы List_contracts
 CREATE TABLE IF NOT EXISTS List_contracts (
     ID_List_contracts Serial NOT NULL PRIMARY KEY,
-    Num_List_contracts VARCHAR(14) NOT NULL,
+    Num_List_contracts VARCHAR(15) NOT NULL,
     Date_conclusion_List_contracts DATE NOT NULL,
     Listeners_ID INT NOT NULL REFERENCES Listeners(ID_Listeners),
     Study_Group_ID INT NOT NULL REFERENCES Study_Group(ID_Study_Group)
@@ -910,7 +906,7 @@ CREATE TABLE IF NOT EXISTS List_contracts (
 -- Реализация хранимых процедур
 -- Добавление
 CREATE OR REPLACE PROCEDURE List_contracts_Insert (
-    p_Num_List_contracts VARCHAR(14),
+    p_Num_List_contracts VARCHAR(15),
     p_Date_conclusion_List_contracts DATE,
     p_Listeners_ID INT,
     p_Study_Group_ID INT
@@ -936,7 +932,7 @@ $$;
 -- Изменение
 CREATE OR REPLACE PROCEDURE List_contracts_Update (
     p_id_List_contracts INT,  
-    p_Num_List_contracts VARCHAR(14),
+    p_Num_List_contracts VARCHAR(15),
     p_Date_conclusion_List_contracts DATE,
     p_Listeners_ID INT,
     p_Study_Group_ID INT
@@ -974,12 +970,12 @@ CREATE INDEX IF NOT EXISTS index_Date_conclusion_List_contracts ON List_contract
 -- Создание таблицы Training_format
 CREATE TABLE IF NOT EXISTS Training_format (
     ID_Training_format Serial NOT NULL PRIMARY KEY,
-    Type_training_training_format VARCHAR(12) NOT NULL
+    Type_training_training_format VARCHAR(13) NOT NULL
 );
 
 -- Реализация хранимых процедур
 -- Добавление
-CREATE OR REPLACE PROCEDURE Training_format_Insert (p_Type_training_training_format VARCHAR(12))
+CREATE OR REPLACE PROCEDURE Training_format_Insert (p_Type_training_training_format VARCHAR(13))
 LANGUAGE plpgsql
 AS $$
 BEGIN
@@ -989,7 +985,7 @@ END;
 $$;
 
 -- Изменение
-CREATE OR REPLACE PROCEDURE Training_format_Update (p_id_Training_format int, p_Type_training_training_format VARCHAR(12))
+CREATE OR REPLACE PROCEDURE Training_format_Update (p_id_Training_format int, p_Type_training_training_format VARCHAR(13))
 LANGUAGE plpgsql
 AS $$
 BEGIN
@@ -1022,9 +1018,9 @@ CREATE TABLE IF NOT EXISTS Schedule (
     D_W_Schedule VARCHAR(11) NOT NULL,
     T_S_Schedule TIME NOT NULL,
     T_F_Schedule TIME NOT NULL,
-    Form_Schedule INT NOT NULL REFERENCES Training_format(ID_Training_format),
     T_S_B_Schedule TIME NOT NULL,
     T_F_B_Schedule TIME NOT NULL,
+	Training_format_ID INT NOT NULL REFERENCES Training_format(ID_Training_format),
     List_contracts_ID INT NOT NULL REFERENCES List_contracts(ID_List_contracts)
 );
 
@@ -1034,9 +1030,9 @@ CREATE OR REPLACE PROCEDURE Schedule_Insert (
     p_D_W_Schedule VARCHAR(11),
     p_T_S_Schedule TIME,
     p_T_F_Schedule TIME,
-    p_Form_Schedule INT,
     p_T_S_B_Schedule TIME,
     p_T_F_B_Schedule TIME,
+	p_Training_format_ID INT,
     p_List_contracts_ID INT
 )
 LANGUAGE plpgsql
@@ -1046,18 +1042,18 @@ BEGIN
     D_W_Schedule,
     T_S_Schedule,
     T_F_Schedule,
-    Form_Schedule,
     T_S_B_Schedule,
     T_F_B_Schedule,
+	Training_format_ID,
     List_contracts_ID
     )
     VALUES (
         p_D_W_Schedule,
         p_T_S_Schedule,
         p_T_F_Schedule,
-        p_Form_Schedule,
         p_T_S_B_Schedule,
         p_T_F_B_Schedule,
+		p_Training_format_ID,
         p_List_contracts_ID
     );
 END;
@@ -1069,9 +1065,9 @@ CREATE OR REPLACE PROCEDURE Schedule_Update (
     p_D_W_Schedule VARCHAR(11),
     p_T_S_Schedule TIME,
     p_T_F_Schedule TIME,
-    p_Form_Schedule INT,
     p_T_S_B_Schedule TIME,
     p_T_F_B_Schedule TIME,
+	p_Training_format_ID INT,
     p_List_contracts_ID INT
     )
 LANGUAGE plpgsql
@@ -1082,9 +1078,9 @@ BEGIN
         D_W_Schedule = p_D_W_Schedule,
         T_S_Schedule = p_T_S_Schedule,
         T_F_Schedule = p_T_F_Schedule,
-        Form_Schedule = p_Form_Schedule,
         T_S_B_Schedule = p_T_S_B_Schedule,
         T_F_B_Schedule = p_T_F_B_Schedule,
+		Training_format_ID = p_Training_format_ID,
         List_contracts_ID = p_List_contracts_ID
     WHERE
         id_Schedule = p_id_Schedule;

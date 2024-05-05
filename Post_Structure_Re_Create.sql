@@ -1,7 +1,3 @@
-create or replace procedure Structure_Re_Create ()
-language plpgsql
-as $$
-	begin
 REVOKE SELECT, INSERT, UPDATE, DELETE ON Training_programs FROM rl_zap_directorc;
 REVOKE USAGE, SELECT ON SEQUENCE Training_programs_id_training_programs_seq FROM rl_zap_directorc;
 REVOKE SELECT, INSERT, UPDATE, DELETE ON Program_modules FROM rl_zap_directorc;
@@ -102,7 +98,6 @@ REVOKE SELECT, DELETE ON Schedule FROM rl_zap_administrator;
     DROP INDEX IF EXISTS index_ID_Training_programs;
     DROP INDEX IF EXISTS index_Name_Training_programs;
     DROP INDEX IF EXISTS index_Prefix_Training_programs;
-    DROP INDEX IF EXISTS index_Direction_Training_programs;
     DROP INDEX IF EXISTS index_Name_qualification_Training_programs;
     DROP INDEX IF EXISTS index_ID_Program_modules;
     DROP INDEX IF EXISTS index_ID_modules;
@@ -127,7 +122,7 @@ REVOKE SELECT, DELETE ON Schedule FROM rl_zap_administrator;
     DROP INDEX IF EXISTS index_ID_Training_status;
     DROP INDEX IF EXISTS index_Type_Status;
     DROP INDEX IF EXISTS index_ID_Study_Group;
-    DROP INDEX IF EXISTS index_Num_St_Grp;
+    DROP INDEX IF EXISTS index_Num_Study_Grp;
     DROP INDEX IF EXISTS index_ID_Listeners;
     DROP INDEX IF EXISTS index_Passport_num_Listeners;
     DROP INDEX IF EXISTS index_Birthday_Listeners;
@@ -167,6 +162,3 @@ REVOKE SELECT, DELETE ON Schedule FROM rl_zap_administrator;
     DROP TABLE IF EXISTS Program_modules;
     DROP TABLE IF EXISTS Modules;
     DROP TABLE IF EXISTS Training_programs;
-Call Structure_Create ();
-	end;
-$$;
